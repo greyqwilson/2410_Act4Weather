@@ -65,9 +65,9 @@ def main():
     figure, hoursAxis = plt.subplots()
 
     #Manually set ticks to line up with months (ticks are in hours)
-    hoursAxis.set_xticks([0, 730, 1460, 2190, 2920, 3650, 4380, 5110, 5840, 6570, 7300, 8030, 8760])
-    hoursAxis.set_xticklabels(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec', 'Jan'])
-    hoursAxis2 = hoursAxis.twinx()
+    # hoursAxis.set_xticks([0, 730, 1460, 2190, 2920, 3650, 4380, 5110, 5840, 6570, 7300, 8030, 8760])
+    # hoursAxis.set_xticklabels(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec', 'Jan'])
+    # hoursAxis2 = hoursAxis.twinx()
     
     #SIMPLE LINE PLOT
 
@@ -103,9 +103,33 @@ def main():
     #plt.hist(tempData['2007'], alpha=1, color='#6eDDff', label='2007', bins=tempBins)
 
     #figure.tight_layout()
-    plt.legend()
-
     
+    #Daily averages by year
+    avg2005 = tempData['2005'].mean()
+    dailyAvg2005 = []
+    #Get average daily temperature for all days in 2005
+    for day in range(0, 365):
+        dailyAvg2005.append(tempData['2005'][day*24:day*24+24].mean())
+    
+    #yoyAvg is dummy variable to hold current year's daily average values
+    yoyAvg = [] 
+    daysAboveAvg_b2005 = [0] * 365
+    for i in range(2005, 2022):
+        yearString = str(i)
+        for day in range(0, 365):
+            #The calculation is confusing, but it is generally like this: day 1 is 0-23, day 2 is 24-47, day 3 is 48-71
+            dayAvg = tempData[yearString][day*24:day*24+24].mean()
+            yoyAvg.append(dayAvg)
+            if dailyAvg2005[day] > dayAvg:
+                daysAboveAvg_b2005[day] += 1
+                
+
+        #plt.plot(yoyAvg)
+        yoyAvg.clear()
+    
+    plt.plot(dailyAvg2005)
+    plt.plot(daysAboveAvg_b2005)
+    plt.legend()
     plt.hot()
 
     #Mean temperature

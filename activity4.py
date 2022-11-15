@@ -114,26 +114,84 @@ def main():
     #yoyAvg is dummy variable to hold current year's daily average values
     yoyAvg = [] 
     daysAboveAvg_b2005 = [0] * 365
+    # daysAboveAvg_b2006 = [0] * 365
+    # daysAboveAvg_b2007 = [0] * 365
+    # dailyAvg2006 = []
+    # dailyAvg2007 = []
+    # #get daily average for each year
+    # for day in range(0, 365):
+    #     dailyAvg2006.append(tempData['2006'][day*24:day*24+24].mean())
+    #     dailyAvg2007.append(tempData['2007'][day*24:day*24+24].mean())
+
+    # #compare 2005 to 2006
+    # avgAboveAvg = [0] * 365
+    # for day in range(0, 365):
+    #     if dailyAvg2005[day] < dailyAvg2006[day]:
+    #         avgAboveAvg[day] += 1
+
+    #     if dailyAvg2005[day] < dailyAvg2007[day]:
+    #         avgAboveAvg[day] += 1
+    
+    # #get average of two years
+    # for day in range(0, 365):
+    #     avgAboveAvg[day] = avgAboveAvg[day]/2
+    
+    #Get daily averages for each year from 2005 thru 2022
     for i in range(2005, 2022):
         yearString = str(i)
         for day in range(0, 365):
             #The calculation is confusing, but it is generally like this: day 1 is 0-23, day 2 is 24-47, day 3 is 48-71
             dayAvg = tempData[yearString][day*24:day*24+24].mean()
             yoyAvg.append(dayAvg)
-            if dailyAvg2005[day] > dayAvg:
+            if dailyAvg2005[day] < dayAvg:
                 daysAboveAvg_b2005[day] += 1
-                
-
-        #plt.plot(yoyAvg)
+        #plt.plot(yoyAvg, label=yearString)
         yoyAvg.clear()
     
-    plt.plot(dailyAvg2005)
-    plt.plot(daysAboveAvg_b2005)
+    #Get statistical data for day 319
+    avgDailyNov15 = []
+    print(tempData['2005'][319*24])
+    for year in range(2005, 2022):
+        yearString = str(year)
+        avgDailyNov15.append(tempData[yearString][319*24])
+
+    #Get statistical data for each hour of day 319
+    Nov15 = []
+    avgHourNov15 = []
+    for year in range(2005, 2022):
+        yearString = str(year)
+        Nov15.append(np.array(tempData[yearString][319*24:319*24+24])) #each year's Nov 15th
+    
+    for hour in range(0, 24):
+        hourArr = []
+        for day in Nov15:
+            hourArr.append(day[hour])
+        avgHourNov15.append(hourArr)
+
+
+    plt.boxplot(avgHourNov15)
+    plt.title("Nov 15 Hourly Temperatures 2005-2021")
+    plt.show()
+    plt.cla()
+    plt.boxplot(Nov15)
+    plt.title("Nov 15 Temperatures 2005-2021")
+    
+    #fig, ax = plt.subplots()
+    #ax.set_xticks([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+    #ax.set_xticklabels([2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021])
+    #ax.plot(avgDailyNov15)
+   # plt.boxplot(avgDailyNov15)
+    #Average amount of days above average
+    #get average of all days
+    # plt.plot(daysAboveAvg_b2005)
+    # for day in range(0, 365):
+    #     daysAboveAvg_b2005[day] /= (2021-2005)
+    # print("Mean days above average: ", np.array(daysAboveAvg_b2005).mean())
+    # plt.plot(dailyAvg2005)
+    # plt.plot(daysAboveAvg_b2005)
+    #plt.plot(avgAboveAvg, scaley='log')
     plt.legend()
     plt.hot()
-
-    #Mean temperature
-    
     
     plt.show()
 main()

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import scipy.stats as scistat
 
 
 def main():
@@ -114,26 +115,53 @@ def main():
     #yoyAvg is dummy variable to hold current year's daily average values
     yoyAvg = [] 
     daysAboveAvg_b2005 = [0] * 365
+    # daysAboveAvg_b2006 = [0] * 365
+    # daysAboveAvg_b2007 = [0] * 365
+    # dailyAvg2006 = []
+    # dailyAvg2007 = []
+    # #get daily average for each year
+    # for day in range(0, 365):
+    #     dailyAvg2006.append(tempData['2006'][day*24:day*24+24].mean())
+    #     dailyAvg2007.append(tempData['2007'][day*24:day*24+24].mean())
+
+    # #compare 2005 to 2006
+    # avgAboveAvg = [0] * 365
+    # for day in range(0, 365):
+    #     if dailyAvg2005[day] < dailyAvg2006[day]:
+    #         avgAboveAvg[day] += 1
+
+    #     if dailyAvg2005[day] < dailyAvg2007[day]:
+    #         avgAboveAvg[day] += 1
+    
+    # #get average of two years
+    # for day in range(0, 365):
+    #     avgAboveAvg[day] = avgAboveAvg[day]/2
+    
+        
+
     for i in range(2005, 2022):
         yearString = str(i)
         for day in range(0, 365):
             #The calculation is confusing, but it is generally like this: day 1 is 0-23, day 2 is 24-47, day 3 is 48-71
             dayAvg = tempData[yearString][day*24:day*24+24].mean()
             yoyAvg.append(dayAvg)
-            if dailyAvg2005[day] > dayAvg:
+            if dailyAvg2005[day] < dayAvg:
                 daysAboveAvg_b2005[day] += 1
                 
 
-        #plt.plot(yoyAvg)
+        #plt.plot(yoyAvg, label=yearString)
         yoyAvg.clear()
     
+    #get average of all days
+    plt.plot(daysAboveAvg_b2005)
+    for day in range(0, 365):
+        daysAboveAvg_b2005[day] /= (2021-2005)
+    print("Mean days above average: ", np.array(daysAboveAvg_b2005).mean())
     plt.plot(dailyAvg2005)
     plt.plot(daysAboveAvg_b2005)
+    #plt.plot(avgAboveAvg, scaley='log')
     plt.legend()
     plt.hot()
-
-    #Mean temperature
-    
     
     plt.show()
 main()
